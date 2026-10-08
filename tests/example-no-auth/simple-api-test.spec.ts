@@ -97,7 +97,6 @@ test('create product with missing mandatory name should receive code 400', async
   //expect(typeof responseBody.price).toBe('number')
 })
 
-
 test('fail to product with invalid price should receive code 400', async ({ request }) => {
   const requestBody = new ProductDto('', 'fruit', 2.39, 1)
   // prepare request body
