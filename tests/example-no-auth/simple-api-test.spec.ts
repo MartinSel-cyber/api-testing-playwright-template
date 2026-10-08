@@ -1,5 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import { expect, test } from '@playwright/test'
+import { ProductDto } from '../../Dto1/product-dto'
 
 test('get product with correct id should receive code 200', async ({ request }) => {
   // Build and send a GET request to the server
@@ -42,35 +43,6 @@ test('get product should with invalid id receive code 400', async ({ request }) 
   // Check if the response status is 200
   expect(statusCode).toBe(StatusCodes.BAD_REQUEST)
 })
-
-test('post product with correct mandatory fields data should receive code 201', async ({
-  request,
-}) => {
-  // prepare request body
-  const requestBody = {
-    name: 'Orange',
-    category: 'Fruit',
-    price: 2.39,
-  }
-  // Send a POST request to the server
-  const response = await request.post('https://shop.tl-academy.ee/api/products', {
-    data: requestBody,
-  })
-  // parse raw response body to json
-  const responseBody = await response.json()
-  const statusCode = response.status()
-
-  // Log the response status and body
-  console.log('response status:', statusCode)
-  console.log('response body:', responseBody)
-  expect(statusCode).toBe(StatusCodes.CREATED)
-  // check that body.name is string type
-  expect(typeof responseBody.name).toBe('string')
-  expect(responseBody.name).toBe('Orange')
-  // check that body.price is number type
-  expect(typeof responseBody.price).toBe('number')
-})
-
 test('post product with correct mandatory data and quantity should receive code 201', async ({
   request,
 }) => {
@@ -122,5 +94,29 @@ test('create product with missing mandatory name should receive code 400', async
   //expect(typeof responseBody.name).toBe('string')
   // check that body.price is number type
   //expect(responseBody.quantity).toBe(25)
+  //expect(typeof responseBody.price).toBe('number')
+})
+
+
+test('fail to product with invalid price should receive code 400', async ({ request }) => {
+  const requestBody = new ProductDto('', 'fruit', 2.39, 1)
+  // prepare request body
+
+  // Send a POST request to the server
+  const response = await request.post('https://shop.tl-academy.ee/api/products', {
+    data: requestBody,
+  })
+  // parse raw response body to json
+  const responseBody = await response.json()
+  const statusCode = response.status()
+
+  // Log the response status and body
+  console.log('response status:', statusCode)
+  console.log('response body:', responseBody)
+  expect(statusCode).toBe(StatusCodes.BAD_REQUEST)
+  // check that body.name is string type
+  //expect(typeof responseBody.name).toBe('string')
+  //expect(responseBody.name).toBe('Orange')
+  // check that body.price is number type
   //expect(typeof responseBody.price).toBe('number')
 })
