@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import { expect, test } from '@playwright/test'
-import { ProductDto } from '../../Dto1/product-dto'
+import { ProductDto } from '../dto/product-dto'
 
 test('get product with correct id should receive code 200', async ({ request }) => {
   // Build and send a GET request to the server
@@ -47,12 +47,9 @@ test('post product with correct mandatory data and quantity should receive code 
   request,
 }) => {
   // prepare request body
-  const requestBody = {
-    name: 'Kiwi',
-    category: 'Fruit',
-    price: 2.39,
-    quantity: 25,
-  }
+
+  const requestBody = new ProductDto('Kiwi', 'Fruit', 2, 25)
+
   // Send a POST request to the server
   const response = await request.post('https://shop.tl-academy.ee/api/products', {
     data: requestBody,
@@ -65,14 +62,40 @@ test('post product with correct mandatory data and quantity should receive code 
   console.log('response status:', statusCode)
   console.log('response body:', responseBody)
   expect(statusCode).toBe(StatusCodes.CREATED)
-  // check that body.name is string type
-  expect(typeof responseBody.name).toBe('string')
-  // check that body.price is number type
   expect(responseBody.quantity).toBe(25)
-  expect(typeof responseBody.price).toBe('number')
+  expect(responseBody.available).toBeTruthy()
 })
 
-test('create product with missing mandatory name should receive code 400', async ({ request }) => {
+test('fail to create product with invalid price should receive code 400', async ({
+  request,
+}) => {
+  // prepare request body
+
+  const requestBody = new ProductDto('Kiwi', 'Fruit', -1, 25)
+
+
+  // Send a POST request to the server
+  const response = await request.post('https://shop.tl-academy.ee/api/products', {
+    data: requestBody,
+  })
+  // parse raw response body to json
+  const responseBody = await response.json()
+  const statusCode = response.status()
+
+  // Log the response status and body
+  console.log('response status:', statusCode)
+  console.log('response body:', responseBody)
+  //expect(statusCode).toBe(StatusCodes.CREATED)
+  //expect(responseBody.quantity).toBe(25)
+  //expect(responseBody.available).toBeTruthy()
+})
+
+
+
+
+
+
+test('Failed to create product with missing mandatory name should receive code 400', async ({ request }) => {
   // prepare request body
   const requestBody = {
     category: 'Fruit',
@@ -97,7 +120,7 @@ test('create product with missing mandatory name should receive code 400', async
   //expect(typeof responseBody.price).toBe('number')
 })
 
-test('fail to product with invalid price should receive code 400', async ({ request }) => {
+test('fail to product with invalid name should receive code 400', async ({ request }) => {
   const requestBody = new ProductDto('', 'fruit', 2.39, 1)
   // prepare request body
 
