@@ -66,13 +66,10 @@ test('post product with correct mandatory data and quantity should receive code 
   expect(responseBody.available).toBeTruthy()
 })
 
-test('fail to create product with invalid price should receive code 400', async ({
-  request,
-}) => {
+test('fail to create product with invalid price should receive code 400', async ({ request }) => {
   // prepare request body
 
   const requestBody = new ProductDto('Kiwi', 'Fruit', -1, 25)
-
 
   // Send a POST request to the server
   const response = await request.post('https://shop.tl-academy.ee/api/products', {
@@ -90,12 +87,9 @@ test('fail to create product with invalid price should receive code 400', async 
   //expect(responseBody.available).toBeTruthy()
 })
 
-
-
-
-
-
-test('Failed to create product with missing mandatory name should receive code 400', async ({ request }) => {
+test('Failed to create product with missing mandatory name should receive code 400', async ({
+  request,
+}) => {
   // prepare request body
   const requestBody = {
     category: 'Fruit',
