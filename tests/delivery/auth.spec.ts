@@ -9,10 +9,7 @@ export const ordersEndpoint = '/orders'
 
 // unskip when ready to use
 test.describe('Authorization flow', () => {
-
   test.beforeAll(() => {
-
-
     loginDto = new Login(process.env['DL_USERNAME']!, process.env['DL_PASSWORD']!)
   })
 
@@ -37,8 +34,6 @@ test.describe('Authorization flow', () => {
 
     expect(order).toBe(orderId)
   })
-
-
 
   test('should get orders with authorization token', async ({ request }) => {
     const token = await fetchJwt(request, loginDto)
